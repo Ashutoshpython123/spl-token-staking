@@ -13,3 +13,11 @@ pub mod spl_stake {
 
 #[derive(Accounts)]
 pub struct Initialize {}
+
+
+#[account]
+pub struct UserInfo {
+    pub amount : u64,
+    pub reward_claimed : u64,
+    pub deposit_slot : u64
+}
