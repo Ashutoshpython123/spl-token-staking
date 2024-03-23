@@ -80,6 +80,11 @@ pub struct Stake<'info> {
     pub system_program: Program<'info, System>
 }
 
+#[derive(Accounts)]
+pub struct Unstake<'info> {
+}
+
+
 #[account]
 pub struct PoolInfo {
     pub admin: Pubkey,
