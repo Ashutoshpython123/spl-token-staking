@@ -2,7 +2,7 @@ import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { SplStake } from "../target/types/spl_stake";
 import { Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js"
-import { Token, TOKEN_PROGRAM_ID, createMint } from "@solana/spl-token"
+import { getOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID, createMint, mintTo } from "@solana/spl-token"
 import { secret } from "./env";
 
 
@@ -30,21 +30,41 @@ describe("spl-stake", () => {
       "confirmed"
     );
 
-    console.log(admin)
-
-    token = await createMint(
+    const mint = await createMint(
       program.provider.connection,
       admin,
       admin.publicKey,
       null,
-      9
+      9,
+      undefined,
+      {},
+      TOKEN_PROGRAM_ID,
     );
 
-    adminTokenAccount = await tokencreateAccount(admin.publicKey);
-    userTokenAccount = await token.createAccount(user.publicKey);
-    console.log(adminTokenAccount, "adminTokenAccount, userTokenAccount", userTokenAccount)
+    adminTokenAccount = await getOrCreateAssociatedTokenAccount(
+      program.provider.connection,
+      admin,
+      mint,
+      admin.publicKey,
+    );
 
-    await token.mintTo(userTokenAccount, admin.publicKey, [admin], 1e10);
+    userTokenAccount = await getOrCreateAssociatedTokenAccount(
+      program.provider.connection,
+      user,
+      mint,
+      user.publicKey,
+    );
+
+    console.log("adminTokenAccount, userTokenAccount")
+
+    await mintTo(
+      program.provider.connection,
+      admin,
+      mint,
+      userTokenAccount.address,
+      admin.publicKey,
+      1000000000000,
+    )
   })
 
   it("Is initialized!", async () => {
