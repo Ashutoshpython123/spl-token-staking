@@ -115,6 +115,25 @@ pub struct ClaimReward<'info>{
     pub token_program: Interface<'info, TokenInterface>
 }
 
+#[derive(Accounts)]
+pub struct Unstake<'info> {
+    /// CHECK:
+    #[account(mut)]
+    pub user: AccountInfo<'info>,
+    /// CHECK:
+    #[account(mut)]
+    pub admin: AccountInfo<'info>,
+    #[account(mut)]
+    pub user_info: Account<'info, UserInfo>,
+    #[account(mut)]
+    pub user_staking_wallet: InterfaceAccount<'info, TokenAccount>,
+    #[account(mut)]
+    pub admin_staking_wallet: InterfaceAccount<'info, TokenAccount>,
+    #[account(mut)]
+    pub staking_token: InterfaceAccount<'info, Mint>,
+    pub token_program: Interface<'info, TokenInterface>,
+}
+
 #[account]
 pub struct PoolInfo {
     pub admin: Pubkey,
